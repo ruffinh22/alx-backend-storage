@@ -172,9 +172,9 @@ cd 0x02-python_async_comprehension
 
 
 # :man: Author and Credits.
-This project was done by [SE. Tolulope Fakunle](https://github.com/ruffinh22). Feel free to get intouch with me;
+This project was done by [SE. Ruffin Hounsounnon](https://github.com/ruffinh22). Feel free to get intouch with me;
 
-:iphone: WhatsApp [+234813738316](https://wa.me/22967376539)
+:iphone: WhatsApp [+22967376539](https://wa.me/22967376539)
 
 :email: Email [ruffinhounsounnon@gmail.com](mailto:ruffinhounsounnon@gmail.com.com)
 
