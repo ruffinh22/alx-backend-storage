@@ -1,38 +1,36 @@
 #!/usr/bin/env python3
 """
-create a web cache
+web cache and tracker
 """
-import redis
 import requests
+import redis
 from functools import wraps
 
-rc = redis.Redis()
+store = redis.Redis()
 
-def cache_page(func):
-    @wraps(func)
+
+def count_url_access(method):
+    """ Decorator counting how many times
+    a URL is accessed """
+    @wraps(method)
     def wrapper(url):
-        # Check if the page is already cached
-        cached_value = rc.get(f"cached:{url}")
-        if cached_value is not None:
-            print("Using cached content...")
-            return cached_value.decode('utf-8')
+        cached_key = "cached:" + url
+        cached_data = store.get(cached_key)
+        if cached_data:
+            return cached_data.decode("utf-8")
 
-        # Fetch the page content and cache it
-        resp = requests.get(url)
-        rc.setex(f"cached:{url}", 10, resp.text)
+        count_key = "count:" + url
+        html = method(url)
 
-        # Increment the access count for the URL
-        rc.incr(f"count:{url}")
-
-        return resp.text
-
+        store.incr(count_key)
+        store.set(cached_key, html)
+        store.expire(cached_key, 10)
+        return html
     return wrapper
 
-@cache_page
-def get_page(url: str) -> str:
-    """ Get a page and cache the value"""
-    return requests.get(url).text
 
-if __name__ == "__main__":
-    page_content = get_page('http://slowwly.robertomurray.co.uk')
-    print(page_content)
+@count_url_access
+def get_page(url: str) -> str:
+    """ Returns HTML content of a url """
+    res = requests.get('http://slowwly.robertomurray.co.uk')
+    return res.text
